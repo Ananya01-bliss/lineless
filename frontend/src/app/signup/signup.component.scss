@@ -1,0 +1,403 @@
+// Color Variables
+$primary-gradient: linear-gradient(135deg, #6366F1, #3B82F6);
+$accent-gradient: linear-gradient(135deg, #06B6D4, #14B8A6);
+$error-color: #F43F5E;
+$success-color: #10B981;
+
+.signup-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem;
+}
+
+.signup-container {
+    display: flex;
+    max-width: 1200px;
+    width: 100%;
+    background: white;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+// Left Side - Branding
+.signup-left {
+    flex: 1;
+    background: $primary-gradient;
+    color: white;
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .branding {
+        margin-bottom: 3rem;
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+
+            &:hover {
+                transform: scale(1.05);
+            }
+        }
+
+        p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+    }
+
+    .features-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1rem;
+
+            .icon {
+                width: 24px;
+                height: 24px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+            }
+        }
+    }
+}
+
+// Right Side - Form
+.signup-right {
+    flex: 1;
+    padding: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-card {
+    width: 100%;
+    max-width: 450px;
+
+    .card-header {
+        margin-bottom: 2rem;
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+    }
+}
+
+// Form Styles
+.signup-form {
+    .form-group {
+        margin-bottom: 1.5rem;
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+
+            &:focus {
+                outline: none;
+                border-color: #6366F1;
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            }
+
+            &.error {
+                border-color: $error-color;
+
+                &:focus {
+                    box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.1);
+                }
+            }
+
+            &::placeholder {
+                color: #9ca3af;
+            }
+        }
+
+        .password-input-wrapper {
+            position: relative;
+
+            input {
+                padding-right: 3rem;
+            }
+
+            .toggle-password {
+                position: absolute;
+                right: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1.25rem;
+                opacity: 0.6;
+                transition: opacity 0.3s;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+
+        .error-message {
+            margin-top: 0.5rem;
+            color: $error-color;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+
+            &::before {
+                content: '⚠';
+            }
+        }
+
+        .field-hint {
+            margin-top: 0.35rem;
+            font-size: 0.72rem;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+    }
+}
+
+// ── Server Error Banner ───────────────────────────────────────
+.server-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    padding: 0.85rem 1rem;
+    background: #fff1f2;
+    border: 1.5px solid #fda4af;
+    border-radius: 0.625rem;
+    animation: slideDown 0.3s ease-out;
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .err-icon {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .err-text {
+        flex: 1;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #be123c;
+        line-height: 1.4;
+    }
+
+    .err-close {
+        background: none;
+        border: none;
+        font-size: 1.25rem;
+        line-height: 1;
+        color: #be123c;
+        cursor: pointer;
+        padding: 0;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+        flex-shrink: 0;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+// Submit Button
+.password-strength {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .strength-bar {
+        flex: 1;
+        height: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        overflow: hidden;
+
+        .strength-fill {
+            height: 100%;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+
+        &.weak .strength-fill {
+            width: 33%;
+            background: #F43F5E;
+        }
+
+        &.medium .strength-fill {
+            width: 66%;
+            background: #F59E0B;
+        }
+
+        &.strong .strength-fill {
+            width: 100%;
+            background: #10B981;
+        }
+    }
+
+    .strength-text {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        min-width: 60px;
+    }
+
+    &:has(.weak) .strength-text {
+        color: #F43F5E;
+    }
+
+    &:has(.medium) .strength-text {
+        color: #F59E0B;
+    }
+
+    &:has(.strong) .strength-text {
+        color: #10B981;
+    }
+}
+
+// Submit Button
+.btn-submit {
+    width: 100%;
+    padding: 1rem;
+    background: $primary-gradient;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+// Form Footer
+.form-footer {
+    margin-top: 2rem;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.875rem;
+
+    .link {
+        color: #6366F1;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.3s;
+
+        &:hover {
+            color: #4f46e5;
+            text-decoration: underline;
+        }
+    }
+}
+
+// Responsive Design
+@media (max-width: 968px) {
+    .signup-container {
+        flex-direction: column;
+    }
+
+    .signup-left {
+        padding: 3rem 2rem;
+
+        .branding h1 {
+            font-size: 2rem;
+        }
+    }
+
+    .signup-right {
+        padding: 3rem 2rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .signup-page {
+        padding: 1rem;
+    }
+
+    .signup-left {
+        padding: 2rem 1.5rem;
+
+        .features-list {
+            gap: 1rem;
+
+            .feature-item {
+                font-size: 0.875rem;
+            }
+        }
+    }
+
+    .signup-right {
+        padding: 2rem 1.5rem;
+    }
+
+    .signup-card {
+        .card-header h2 {
+            font-size: 1.5rem;
+        }
+    }
+}

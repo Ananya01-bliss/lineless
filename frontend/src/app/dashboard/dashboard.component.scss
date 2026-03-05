@@ -1,0 +1,281 @@
+$primary-gradient: linear-gradient(135deg, #6366F1, #3B82F6);
+$main-bg: #f8fafc;
+$card-bg: #ffffff;
+$text-primary: #1e293b;
+$text-secondary: #64748b;
+$border-color: #e2e8f0;
+$success-color: #10B981;
+$danger-color: #F43F5E;
+
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+    background: $main-bg;
+}
+
+.main-content {
+    flex: 1;
+    padding: 2.5rem;
+    transition: margin-left 0.3s ease;
+    max-width: 1600px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+
+    .top-bar-left {
+        h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: $text-primary;
+            margin: 0;
+            letter-spacing: -0.025em;
+        }
+
+        .greeting {
+            color: $text-secondary;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+    }
+
+    .top-bar-right {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+
+        .time-display {
+            font-size: 1rem;
+            font-weight: 600;
+            color: $text-secondary;
+            padding: 0.6rem 1.25rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border: 1px solid $border-color;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: $primary-gradient;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
+        }
+    }
+}
+
+// Guide Section
+.guide-section {
+    margin-bottom: 3rem;
+
+    .section-header {
+        margin-bottom: 2rem;
+
+        h3 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: $text-primary;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        p {
+            color: $text-secondary;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+    }
+
+    .guide-steps-container {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        overflow-x: auto;
+        padding-bottom: 1rem;
+    }
+
+    .step-connector {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #cbd5e1;
+        font-size: 2rem;
+        font-weight: 300;
+
+        @media (max-width: 900px) {
+            display: none; // Hide arrows on smaller screens where it wraps
+        }
+    }
+
+    .guide-card {
+        flex: 1;
+        min-width: 280px;
+        background: white;
+        padding: 2rem;
+        border-radius: 24px;
+        border: 1px solid $border-color;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        overflow: hidden;
+
+        &:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.1), 0 8px 10px -6px rgba(99, 102, 241, 0.1);
+            border-color: #6366f1;
+
+            .action-link {
+                color: #6366f1;
+                transform: translateX(4px);
+            }
+        }
+
+        .step-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #f1f5f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: $text-secondary;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.3s;
+        }
+
+        // Specific colors for steps
+        &.step-1 .card-icon {
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+
+        // Blue
+        &.step-2 .card-icon {
+            background: #faf5ff;
+            color: #a855f7;
+        }
+
+        // Purple
+        &.step-3 .card-icon {
+            background: #ecfdf5;
+            color: #10b981;
+        }
+
+        // Green
+
+        .card-content {
+            h4 {
+                font-size: 1.25rem;
+                font-weight: 800;
+                color: $text-primary;
+                margin: 0 0 0.75rem 0;
+            }
+
+            p {
+                color: $text-secondary;
+                margin: 0 0 1.5rem 0;
+                line-height: 1.6;
+                font-size: 0.95rem;
+            }
+
+            .action-link {
+                font-weight: 700;
+                font-size: 0.9rem;
+                color: $text-secondary;
+                transition: all 0.2s;
+                display: inline-block;
+            }
+        }
+    }
+}
+
+// Info Grid
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+
+    .info-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid $border-color;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+        align-items: center;
+
+        .info-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: $text-primary;
+            margin: 0;
+        }
+
+        p {
+            color: $text-secondary;
+            font-size: 0.9rem;
+            margin: 0;
+            max-width: 300px;
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .guide-steps-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding: 1.5rem;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+}

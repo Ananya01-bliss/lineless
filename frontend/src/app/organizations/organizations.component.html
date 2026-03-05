@@ -1,0 +1,117 @@
+<div class="layout">
+    <app-sidebar (collapseChange)="isSidebarCollapsed = $event"></app-sidebar>
+
+    <main class="content" [style.marginLeft.px]="isSidebarCollapsed ? 80 : 250">
+        <div class="organizations-container">
+            <div class="header-actions">
+                <div>
+                    <h1>Organizations</h1>
+                    <p class="subtitle">Manage your organizations and their services</p>
+                </div>
+                <button class="btn-create" (click)="openCreateModal()">
+                    <span>+</span> Create Organization
+                </button>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search organizations..." [(ngModel)]="searchTerm"
+                    (input)="searchOrganizations()" />
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div *ngIf="loading" class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading organizations...</p>
+            </div>
+
+            <div *ngIf="error" class="error-message">
+                {{ error }}
+                <button (click)="loadOrganizations()">Retry</button>
+            </div>
+
+            <div *ngIf="!loading && !error && filteredOrganizations.length === 0" class="empty-state">
+                <div class="empty-icon">🏢</div>
+                <h3>No organizations found</h3>
+                <p *ngIf="searchTerm">Try adjusting your search terms</p>
+                <p *ngIf="!searchTerm">Create your first organization to get started</p>
+                <button *ngIf="!searchTerm" class="btn-create-large" (click)="openCreateModal()">
+                    Create Organization
+                </button>
+            </div>
+
+            <div *ngIf="!loading && !error && filteredOrganizations.length > 0" class="organizations-grid">
+                <div *ngFor="let org of filteredOrganizations" class="org-card" (click)="viewOrganization(org._id)">
+                    <div class="org-header">
+                        <div class="org-icon">
+                            {{ org.logo ? '' : (org.name | slice:0:1 | uppercase) }}
+                            <img *ngIf="org.logo" [src]="org.logo" alt="Logo">
+                        </div>
+                        <div class="org-info">
+                            <h3>{{ org.name }}</h3>
+                            <span class="status-badge" [class.active]="org.isActive">
+                                {{ org.isActive ? 'Active' : 'Inactive' }}
+                            </span>
+                        </div>
+                        <div class="org-actions">
+                            <button class="btn-icon edit" (click)="openEditModal(org, $event)" title="Edit">
+                                ✏️
+                            </button>
+                            <button class="btn-icon delete"
+                                (click)="deleteOrganization(org._id, org.name); $event.stopPropagation()"
+                                title="Delete">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="org-body">
+                        <p class="description">{{ org.description || 'No description provided' }}</p>
+                    </div>
+
+                    <div class="org-footer">
+                        <div class="detail-item">
+                            <span class="icon">📅</span>
+                            <span>Created: {{ org.createdAt | date:'mediumDate' }}</span>
+                        </div>
+                        <div class="detail-item arrow">
+                            <span>Manage Services →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create/Edit Modal -->
+        <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h2>{{ isEditing ? 'Edit Organization' : 'Create New Organization' }}</h2>
+                    <button class="btn-close" (click)="closeCreateModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <form (ngSubmit)="saveOrganization()">
+                        <div class="form-group">
+                            <label>Organization Name *</label>
+                            <input type="text" [(ngModel)]="currentOrganization.name" name="name"
+                                placeholder="Enter organization name" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description (Optional)</label>
+                            <textarea [(ngModel)]="currentOrganization.description" name="description" rows="3"
+                                placeholder="Brief description of your organization"></textarea>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn-secondary" (click)="closeCreateModal()">Cancel</button>
+                            <button type="submit" class="btn-primary"
+                                [disabled]="!currentOrganization.name || isSubmitting">
+                                {{ isEditing ? 'Save Changes' : 'Create Organization' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

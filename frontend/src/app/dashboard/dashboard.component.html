@@ -1,0 +1,86 @@
+<div class="dashboard-layout">
+    <app-sidebar (collapseChange)="isSidebarCollapsed = $event"></app-sidebar>
+
+    <main class="main-content" [style.marginLeft.px]="isSidebarCollapsed ? 80 : 250">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h2>Dashboard</h2>
+                <p class="greeting">Welcome back, {{ userName }}! 👋</p>
+            </div>
+            <div class="top-bar-right">
+                <div class="time-display">{{ currentTime }}</div>
+                <div class="user-avatar">
+                    <span>{{ userName.charAt(0).toUpperCase() }}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Smart Setup Guide -->
+        <section class="guide-section">
+            <div class="section-header">
+                <h3>🚀 Smart Start Guide</h3>
+                <p>Follow these steps to set up your queue management system efficiently.</p>
+            </div>
+
+            <div class="guide-steps-container">
+                <!-- Step 1 -->
+                <div class="guide-card step-1" (click)="createOrganization()">
+                    <div class="step-badge">Step 1</div>
+                    <div class="card-icon">🏢</div>
+                    <div class="card-content">
+                        <h4>Create Organization</h4>
+                        <p>Set up your business identity, location, and contact information.</p>
+                        <span class="action-link">Go to Organizations →</span>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="step-connector">
+                    <span class="arrow">➔</span>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="guide-card step-2" (click)="createService()">
+                    <div class="step-badge">Step 2</div>
+                    <div class="card-icon">⚙️</div>
+                    <div class="card-content">
+                        <h4>Configure Services</h4>
+                        <p>Define services (e.g., General Ward) and assign counters to staff.</p>
+                        <span class="action-link">Go to Services →</span>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="step-connector">
+                    <span class="arrow">➔</span>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="guide-card step-3" (click)="viewQueue()">
+                    <div class="step-badge">Step 3</div>
+                    <div class="card-icon">👥</div>
+                    <div class="card-content">
+                        <h4>Manage Live Queue</h4>
+                        <p>Start calling tokens, track wait times, and manage flow in real-time.</p>
+                        <span class="action-link">Open Queue Manager →</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Grid (Optional useful links/info) -->
+        <section class="info-grid">
+            <div class="info-card">
+                <div class="info-icon">📱</div>
+                <h4>Customer App</h4>
+                <p>Customers can join queues by scanning QR codes generated in the Services page.</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">📊</div>
+                <h4>Analytics</h4>
+                <p>View detailed reports and insights in the Analytics tab once data is available.</p>
+            </div>
+        </section>
+    </main>
+</div>

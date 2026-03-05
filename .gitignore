@@ -1,0 +1,33 @@
+# ── Node / npm ────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ── Angular build output ───────────────────────────────────────────────────
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+
+# ── Environment / secrets ──────────────────────────────────────────────────
+.env
+.env.*
+frontend/src/environments/environment.prod.ts
+
+# ── OS & editor clutter ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Logs ──────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Misc ──────────────────────────────────────────────────────────────────
+*.zip
+*.tar.gz

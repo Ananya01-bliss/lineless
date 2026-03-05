@@ -1,0 +1,129 @@
+<div class="signup-page">
+    <div class="signup-container">
+        <!-- Left Side - Branding -->
+        <div class="signup-left">
+            <div class="branding">
+                <h1 (click)="navigateToLanding()">Lineless</h1>
+                <p>Join thousands of organizations transforming their queue management</p>
+            </div>
+            <div class="features-list">
+                <div class="feature-item">
+                    <span class="icon">✓</span>
+                    <span>QR-based virtual queuing</span>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">✓</span>
+                    <span>Real-time position tracking</span>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">✓</span>
+                    <span>Intelligent load balancing</span>
+                </div>
+                <div class="feature-item">
+                    <span class="icon">✓</span>
+                    <span>Advanced analytics dashboard</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Signup Form -->
+        <div class="signup-right">
+            <div class="signup-card">
+                <div class="card-header">
+                    <h2>Create Account</h2>
+                    <p>Get started with your free account</p>
+                </div>
+
+                <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+                    <!-- Name Field -->
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" formControlName="name" placeholder="John Doe"
+                            [class.error]="f['name'].invalid && f['name'].touched" />
+                        <div class="error-message" *ngIf="f['name'].invalid && f['name'].touched">
+                            <span *ngIf="f['name'].errors?.['required']">Name is required</span>
+                            <span *ngIf="f['name'].errors?.['minlength']">Name must be at least 2 characters</span>
+                        </div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" formControlName="email" placeholder="john@gmail.com"
+                            [class.error]="f['email'].invalid && f['email'].touched" />
+                        <div class="error-message" *ngIf="f['email'].invalid && f['email'].touched">
+                            <span *ngIf="f['email'].errors?.['required']">Email is required</span>
+                            <span *ngIf="f['email'].errors?.['email']">Please enter a valid email address</span>
+                            <span *ngIf="f['email'].errors?.['domainNotAllowed']">
+                                Only Gmail, Outlook, Yahoo, iCloud, and institutional (.edu&nbsp;/&nbsp;.ac.in)
+                                addresses are accepted.
+                            </span>
+                        </div>
+                        <div class="field-hint" *ngIf="!f['email'].errors?.['domainNotAllowed'] || !f['email'].touched">
+                            Accepted: gmail.com &bull; outlook.com &bull; yahoo.com &bull; icloud.com &bull; .edu /
+                            .ac.in
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-input-wrapper">
+                            <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+                                placeholder="Minimum 6 characters" (input)="onPasswordChange($event)"
+                                [class.error]="f['password'].invalid && f['password'].touched" />
+                            <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+                                {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+                            </button>
+                        </div>
+                        <div class="password-strength" *ngIf="passwordStrength">
+                            <div class="strength-bar" [class]="passwordStrength">
+                                <div class="strength-fill"></div>
+                            </div>
+                            <span class="strength-text">{{ passwordStrength | titlecase }}</span>
+                        </div>
+                        <div class="error-message" *ngIf="f['password'].invalid && f['password'].touched">
+                            <span *ngIf="f['password'].errors?.['required']">Password is required</span>
+                            <span *ngIf="f['password'].errors?.['minlength']">Password must be at least 6
+                                characters</span>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input [type]="showPassword ? 'text' : 'password'" id="confirmPassword"
+                            formControlName="confirmPassword" placeholder="Re-enter your password"
+                            [class.error]="f['confirmPassword'].invalid && f['confirmPassword'].touched" />
+                        <div class="error-message" *ngIf="f['confirmPassword'].invalid && f['confirmPassword'].touched">
+                            <span *ngIf="f['confirmPassword'].errors?.['required']">Please confirm your password</span>
+                            <span *ngIf="f['confirmPassword'].errors?.['passwordMismatch']">Passwords do not
+                                match</span>
+                        </div>
+                    </div>
+
+                    <!-- Server Error Banner -->
+                    <div *ngIf="errorMessage" class="server-error-banner" role="alert">
+                        <span class="err-icon">⚠️</span>
+                        <span class="err-text">{{ errorMessage }}</span>
+                        <button type="button" class="err-close" (click)="errorMessage = ''">×</button>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+                        <span *ngIf="!isSubmitting">Create Account</span>
+                        <span *ngIf="isSubmitting">Creating Account...</span>
+                    </button>
+                </form>
+
+                <!-- Login Link -->
+                <div class="form-footer">
+                    <p>
+                        Already have an account?
+                        <a (click)="navigateToLogin()" class="link">Login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,317 @@
+# Lineless System Architecture
+
+## High-Level Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         CLIENT LAYER                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │   Customer   │  │    Admin     │  │    Staff     │          │
+│  │  Interface   │  │  Dashboard   │  │    Panel     │          │
+│  │  (Angular)   │  │  (Angular)   │  │  (Angular)   │          │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘          │
+│         │                  │                  │                   │
+│         └──────────────────┴──────────────────┘                   │
+│                            │                                       │
+│                   HTTP/WebSocket                                  │
+│                            │                                       │
+└────────────────────────────┼───────────────────────────────────────┘
+                             │
+┌────────────────────────────┼───────────────────────────────────────┐
+│                         SERVER LAYER                              │
+├────────────────────────────┼───────────────────────────────────────┤
+│                            ▼                                       │
+│              ┌─────────────────────────┐                          │
+│              │   Express.js Server     │                          │
+│              │   + Socket.IO           │                          │
+│              └────────┬────────────────┘                          │
+│                       │                                            │
+│         ┌─────────────┼─────────────┐                            │
+│         │             │             │                             │
+│         ▼             ▼             ▼                             │
+│   ┌─────────┐  ┌──────────┐  ┌──────────┐                       │
+│   │  Auth   │  │   API    │  │ WebSocket│                       │
+│   │  Layer  │  │  Routes  │  │  Events  │                       │
+│   └─────────┘  └────┬─────┘  └──────────┘                       │
+│                     │                                             │
+│                     ▼                                             │
+│         ┌───────────────────────┐                                │
+│         │   Queue Manager       │                                │
+│         │   (DSA Orchestrator)  │                                │
+│         └───────────┬───────────┘                                │
+│                     │                                             │
+│     ┌───────────────┼───────────────┐                           │
+│     │               │               │                            │
+│     ▼               ▼               ▼                            │
+│ ┌────────┐    ┌─────────┐    ┌──────────┐                      │
+│ │  FIFO  │    │Min-Heap │    │ Sliding  │                      │
+│ │ Queue  │    │(Counter)│    │  Window  │                      │
+│ └────────┘    └─────────┘    └──────────┘                      │
+│                                                                   │
+│     ▼               ▼               ▼                            │
+│ ┌────────┐    ┌─────────┐    ┌──────────┐                      │
+│ │ Deque  │    │ HashMap │    │Priority  │                      │
+│ │(No-Show)│   │(Tokens) │    │  Queue   │                      │
+│ └────────┘    └─────────┘    └──────────┘                      │
+│                                                                   │
+└───────────────────────────┬───────────────────────────────────────┘
+                            │
+┌───────────────────────────┼───────────────────────────────────────┐
+│                      DATABASE LAYER                               │
+├───────────────────────────┼───────────────────────────────────────┤
+│                           ▼                                       │
+│              ┌─────────────────────────┐                          │
+│              │      MongoDB            │                          │
+│              └─────────────────────────┘                          │
+│                           │                                       │
+│         ┌─────────────────┼─────────────────┐                     │
+│         │                 │                 │                     │
+│         ▼                 ▼                 ▼                     │
+│   ┌─────────┐      ┌──────────┐     ┌──────────┐                  │
+│   │  Users  │      │   Orgs   │     │ Services │                  │
+│   └─────────┘      └──────────┘     └──────────┘                  │
+│                                                                   │
+│         ▼                 ▼                 ▼                     │
+│   ┌─────────┐      ┌──────────┐     ┌──────────┐                  │
+│   │ Tokens  │      │Analytics │     │ History  │                  │
+│   └─────────┘      └──────────┘     └──────────┘                  │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
+```
+
+## Data Flow: Customer Joins Queue
+
+```
+Customer Scans QR
+       │
+       ▼
+┌──────────────┐
+│ Join Queue   │  POST /api/tokens/join
+│   Page       │  { serviceId, priority }
+└──────┬───────┘
+       │
+       ▼
+┌──────────────────────────────────────┐
+│  Token Route Handler                 │
+│  1. Validate service                 │
+│  2. Generate token number            │
+│  3. Create token in DB               │
+└──────┬───────────────────────────────┘
+       │
+       ▼
+┌──────────────────────────────────────┐
+│  Queue Manager                       │
+│  1. Add to FIFO/Priority Queue       │
+│  2. Store in HashMap                 │
+│  3. Calculate position               │
+│  4. Predict wait time (Sliding Win)  │
+└──────┬───────────────────────────────┘
+       │
+       ├─────────────────┬──────────────┐
+       ▼                 ▼              ▼
+┌──────────┐      ┌──────────┐   ┌──────────┐
+│ Update   │      │ Emit     │   │ Return   │
+│ Database │      │ WebSocket│   │ Response │
+└──────────┘      └──────────┘   └──────────┘
+                        │
+                        ▼
+              ┌──────────────────┐
+              │ All clients in   │
+              │ service room get │
+              │ queue update     │
+              └──────────────────┘
+```
+
+## Data Flow: Call Next Token
+
+```
+Staff Clicks "Call Next"
+       │
+       ▼
+┌──────────────┐
+│ Counter      │  POST /api/tokens/call-next
+│   Panel      │  { serviceId }
+└──────┬───────┘
+       │
+       ▼
+┌──────────────────────────────────────┐
+│  Queue Manager                       │
+│  1. Check Priority Queue first       │
+│  2. If empty, check Normal Queue     │
+│  3. Extract min from Counter Heap    │
+│  4. Assign token to counter          │
+│  5. Update counter load (+1)         │
+│  6. Re-insert counter to heap        │
+└──────┬───────────────────────────────┘
+       │
+       ├─────────────────┬──────────────┐
+       ▼                 ▼              ▼
+┌──────────┐      ┌──────────┐   ┌──────────┐
+│ Update   │      │ Emit     │   │ Return   │
+│ Token DB │      │ WebSocket│   │ Counter  │
+│ status   │      │ events   │   │ Info     │
+└──────────┘      └────┬─────┘   └──────────┘
+                       │
+              ┌────────┴────────┐
+              ▼                 ▼
+       ┌──────────┐      ┌──────────┐
+       │ Customer │      │ Display  │
+       │ notified │      │ updated  │
+       └──────────┘      └──────────┘
+```
+
+## DSA Component Interactions
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Queue Manager                            │
+│                                                             │
+│  ┌────────────┐         ┌────────────┐                      │
+│  │  Priority  │ ──────▶ │   Normal   │                      │
+│  │   Queue    │ Check   │   Queue    │                      │
+│  │  (FIFO)    │  First  │   (FIFO)   │                      │
+│  └─────┬──────┘         └─────┬──────┘                      │
+│        │                      │                             │
+│        └──────────┬───────────┘                             │
+│                   │                                         │
+│                   ▼                                         │
+│         ┌──────────────────┐                                │
+│         │   Token Dequeue  │                                │
+│         └────────┬─────────┘                                │
+│                  │                                          │
+│                  ▼                                          │
+│         ┌──────────────────┐                                │
+│         │    Min-Heap      │                                │
+│         │ Extract Minimum  │                                │
+│         │ (Least Loaded    │                                │
+│         │   Counter)       │                                │
+│         └────────┬─────────┘                                │
+│                  │                                          │
+│                  ▼                                          │
+│         ┌──────────────────┐                                │
+│         │ Assign Token to  │                                │
+│         │    Counter       │                                │
+│         └────────┬─────────┘                                │
+│                  │                                          │
+│         ┌────────┴────────┐                                 │
+│         │                 │                                 │
+│         ▼                 ▼                                 │
+│  ┌──────────┐      ┌──────────┐                             │
+│  │ HashMap  │      │ Sliding  │                             │
+│  │  Update  │      │  Window  │                             │
+│  │  Token   │      │  Record  │                             │
+│  │  State   │      │  Time    │                             │
+│  └──────────┘      └──────────┘                             │
+│                                                             │
+│  On No-Show:                                                │
+│  ┌──────────┐                                               │
+│  │  Deque   │ ◀── Token moved here                          │
+│  │ (Skipped)│     Can be recalled                           │
+│  └──────────┘                                               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Time Complexity Analysis
+
+| Operation | DSA Used | Time Complexity |
+|-----------|----------|-----------------|
+| Join Queue | FIFO enqueue | O(1) |
+| Get Position | FIFO find | O(n) |
+| Call Next | Min-Heap extract + FIFO dequeue | O(log n) |
+| Assign Counter | Min-Heap insert | O(log n) |
+| Mark Served | HashMap lookup + Sliding Window add | O(1) |
+| Skip Token | Deque add | O(1) |
+| Recall Token | Deque remove + FIFO enqueue | O(1) |
+| Predict Wait | Sliding Window average | O(1) |
+| Get Token Status | HashMap lookup | O(1) |
+
+## Space Complexity
+
+| Component | Space Complexity |
+|-----------|------------------|
+| FIFO Queue | O(n) - n tokens |
+| Min-Heap | O(m) - m counters |
+| Sliding Window | O(k) - k=20 fixed |
+| Deque | O(s) - s skipped tokens |
+| HashMap | O(n) - n tokens |
+| **Total** | **O(n + m + s)** |
+
+Where:
+- n = number of waiting tokens
+- m = number of counters
+- s = number of skipped tokens
+- k = window size (constant)
+
+## Real-Time Communication Flow
+
+```
+┌──────────┐                    ┌──────────┐
+│ Customer │                    │  Server  │
+│  Client  │                    │          │
+└────┬─────┘                    └────┬─────┘
+     │                               │
+     │ Connect WebSocket             │
+     ├──────────────────────────────▶│
+     │                               │
+     │ join-service event            │
+     ├──────────────────────────────▶│
+     │                               │
+     │         Joined room           │
+     │◀──────────────────────────────┤
+     │                               │
+     │                               │ Token called
+     │                               │ by staff
+     │                               │
+     │  token-called event           │
+     │◀──────────────────────────────┤
+     │  { tokenNumber, counterId }   │
+     │                               │
+     │  queue-updated event          │
+     │◀──────────────────────────────┤
+     │  { queueStatus }              │
+     │                               │
+```
+
+## Security Architecture
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    Security Layers                       │
+├──────────────────────────────────────────────────────────┤
+│                                                           │
+│  1. HTTPS/WSS (Production)                              │
+│     └─ Encrypted communication                           │
+│                                                           │
+│  2. CORS Configuration                                   │
+│     └─ Whitelist frontend URL                           │
+│                                                           │
+│  3. JWT Authentication                                   │
+│     ├─ Token in Authorization header                     │
+│     ├─ 7-day expiration                                  │
+│     └─ Refresh token mechanism                           │
+│                                                           │
+│  4. Input Validation                                     │
+│     ├─ express-validator                                 │
+│     ├─ Mongoose schema validation                        │
+│     └─ Sanitization                                      │
+│                                                           │
+│  5. Password Security                                    │
+│     ├─ bcrypt hashing (10 rounds)                        │
+│     └─ Password strength requirements                    │
+│                                                           │
+│  6. Rate Limiting (TODO)                                 │
+│     └─ Prevent brute force attacks                       │
+│                                                           │
+└──────────────────────────────────────────────────────────┘
+```
+
+This architecture ensures:
+- ✅ **Scalability:** In-memory queues with DB persistence
+- ✅ **Performance:** O(1) and O(log n) operations
+- ✅ **Real-time:** WebSocket for instant updates
+- ✅ **Reliability:** Data persistence in MongoDB
+- ✅ **Fairness:** FIFO within priority levels
+- ✅ **Efficiency:** Min-Heap load balancing

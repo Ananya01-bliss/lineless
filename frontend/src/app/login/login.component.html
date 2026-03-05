@@ -1,0 +1,78 @@
+<div class="login-page">
+    <div class="login-container">
+        <!-- Left Side - Branding -->
+        <div class="login-left">
+            <div class="branding">
+                <h1 (click)="navigateToLanding()">Lineless</h1>
+                <p>Queue management without the queue. Set up your service, issue tokens via QR, and manage everything
+                    from one dashboard.</p>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="login-right">
+            <div class="login-card">
+                <div class="card-header">
+                    <p>Login to your Lineless account</p>
+                </div>
+
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" formControlName="email" placeholder="john@example.com"
+                            [class.error]="f['email'].invalid && f['email'].touched" />
+                        <div class="error-message" *ngIf="f['email'].invalid && f['email'].touched">
+                            <span *ngIf="f['email'].errors?.['required']">Email is required</span>
+                            <span *ngIf="f['email'].errors?.['email']">Please enter a valid email</span>
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label for="password">Password</label>
+                            <a class="forgot-link" (click)="navigateToForgotPassword()">Forgot Password?</a>
+                        </div>
+                        <div class="password-input-wrapper">
+                            <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+                                placeholder="Enter your password"
+                                [class.error]="f['password'].invalid && f['password'].touched" />
+                            <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+                                {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+                            </button>
+                        </div>
+                        <div class="error-message" *ngIf="f['password'].invalid && f['password'].touched">
+                            <span *ngIf="f['password'].errors?.['required']">Password is required</span>
+                        </div>
+                    </div>
+
+
+
+                    <!-- ── SERVER ERROR BANNER ──────────────────────── -->
+                    <div *ngIf="errorMessage" class="server-error-banner" role="alert">
+                        <span class="err-icon">⚠️</span>
+                        <span class="err-text">{{ errorMessage }}</span>
+                        <button type="button" class="err-close" (click)="errorMessage = ''">×</button>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+                        <span *ngIf="!isSubmitting">Login</span>
+                        <span *ngIf="isSubmitting">Logging in...</span>
+                    </button>
+                </form>
+
+                <!-- Signup Link -->
+                <div class="form-footer">
+                    <p>
+                        Don't have an account?
+                        <a (click)="navigateToSignup()" class="link">Sign up for free</a>
+                    </p>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

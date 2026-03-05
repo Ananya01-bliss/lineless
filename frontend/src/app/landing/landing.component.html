@@ -1,0 +1,259 @@
+<div class="landing-page">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+        </div>
+
+        <!-- ── Queue Story Animation ──────────────────────────────── -->
+        <svg class="queue-anim" viewBox="0 0 1440 230" preserveAspectRatio="xMidYMax meet"
+            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+
+            <!-- Phase labels — opacity controlled by JS physics -->
+            <text class="phase-label phase-queue" x="720" y="30" text-anchor="middle" fill="rgba(255,255,255,0.70)"
+                font-size="13" font-family="system-ui,sans-serif" font-weight="600">
+                😤 Standing in a long queue...
+            </text>
+            <text class="phase-label phase-free" x="720" y="30" text-anchor="middle" fill="rgba(110,231,183,0.90)"
+                font-size="13" font-family="system-ui,sans-serif" font-weight="700">
+                📱 Virtual queue — go anywhere you like!
+            </text>
+
+            <!-- Hover hint (JS hides this after first interaction) -->
+            <text class="hint-label" x="720" y="55" text-anchor="middle" fill="rgba(255,255,255,0.48)" font-size="11"
+                font-family="system-ui,sans-serif">
+                ↑ Move your cursor over the queue to free them
+            </text>
+
+            <!-- Ground line -->
+            <line x1="0" y1="208" x2="1440" y2="208" stroke="rgba(255,255,255,0.10)" stroke-width="1" />
+
+            <!-- Service counter / booth -->
+            <rect x="18" y="138" width="78" height="70" rx="6" fill="rgba(255,255,255,0.06)"
+                stroke="rgba(255,255,255,0.28)" stroke-width="1.8" />
+            <!-- Booth window ledge -->
+            <line x1="18" y1="168" x2="96" y2="168" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" />
+            <!-- Staff head inside booth -->
+            <circle cx="57" cy="153" r="9" fill="none" stroke="rgba(255,255,255,0.33)" stroke-width="1.8" />
+            <text x="57" y="222" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8"
+                font-family="system-ui,sans-serif" font-weight="700" letter-spacing="1">COUNTER</text>
+
+            <!-- QR icon on counter (glows in free phase) -->
+            <rect class="qr-glow" x="66" y="173" width="18" height="18" rx="2" fill="rgba(99,102,241,0.15)"
+                stroke="rgba(99,102,241,0.5)" stroke-width="1.2" />
+            <text class="qr-glow" x="75" y="186" text-anchor="middle" fill="rgba(165,180,252,0.8)" font-size="9"
+                font-family="system-ui,sans-serif">QR</text>
+
+            <!--
+                Figures — feet at y=208, built from (0,0)=feet upward.
+                Queue positions: x = 145, 200, 255, 310, 365
+                Free positions:  x = 490, 680, 860, 1040, 1210
+                Each fig has its own translateX keyframe animation.
+                Phone emoji appears during the free phase.
+            -->
+
+            <!-- Figure 1 -->
+            <g class="fig f1" transform="translate(145,208)">
+                <circle cy="-71" r="12" fill="none" stroke="rgba(255,255,255,0.82)" stroke-width="2.5"
+                    stroke-linecap="round" />
+                <line y1="-59" y2="-30" stroke="rgba(255,255,255,0.82)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="-17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.75)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.75)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="-12" y1="-30" stroke="rgba(255,255,255,0.82)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="12" y1="-30" stroke="rgba(255,255,255,0.82)" stroke-width="2.5" stroke-linecap="round" />
+                <text class="phone" dy="-88" dx="8" font-size="14">📱</text>
+            </g>
+
+            <!-- Figure 2 -->
+            <g class="fig f2" transform="translate(200,208)">
+                <circle cy="-71" r="12" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="2.5"
+                    stroke-linecap="round" />
+                <line y1="-59" y2="-30" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="-17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.68)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.68)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="-12" y1="-30" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="12" y1="-30" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" stroke-linecap="round" />
+                <text class="phone" dy="-88" dx="8" font-size="14">📱</text>
+            </g>
+
+            <!-- Figure 3 -->
+            <g class="fig f3" transform="translate(255,208)">
+                <circle cy="-71" r="12" fill="none" stroke="rgba(255,255,255,0.68)" stroke-width="2.5"
+                    stroke-linecap="round" />
+                <line y1="-59" y2="-30" stroke="rgba(255,255,255,0.68)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="-17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.60)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.60)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="-12" y1="-30" stroke="rgba(255,255,255,0.68)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="12" y1="-30" stroke="rgba(255,255,255,0.68)" stroke-width="2.5" stroke-linecap="round" />
+                <text class="phone" dy="-88" dx="8" font-size="14">📱</text>
+            </g>
+
+            <!-- Figure 4 -->
+            <g class="fig f4" transform="translate(310,208)">
+                <circle cy="-71" r="12" fill="none" stroke="rgba(255,255,255,0.60)" stroke-width="2.5"
+                    stroke-linecap="round" />
+                <line y1="-59" y2="-30" stroke="rgba(255,255,255,0.60)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="-17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.52)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.52)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="-12" y1="-30" stroke="rgba(255,255,255,0.60)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="12" y1="-30" stroke="rgba(255,255,255,0.60)" stroke-width="2.5" stroke-linecap="round" />
+                <text class="phone" dy="-88" dx="8" font-size="14">📱</text>
+            </g>
+
+            <!-- Figure 5 -->
+            <g class="fig f5" transform="translate(365,208)">
+                <circle cy="-71" r="12" fill="none" stroke="rgba(255,255,255,0.52)" stroke-width="2.5"
+                    stroke-linecap="round" />
+                <line y1="-59" y2="-30" stroke="rgba(255,255,255,0.52)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="-17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.44)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="17" y1="-47" y2="-35" stroke="rgba(255,255,255,0.44)" stroke-width="2"
+                    stroke-linecap="round" />
+                <line x2="-12" y1="-30" stroke="rgba(255,255,255,0.52)" stroke-width="2.5" stroke-linecap="round" />
+                <line x2="12" y1="-30" stroke="rgba(255,255,255,0.52)" stroke-width="2.5" stroke-linecap="round" />
+                <text class="phone" dy="-88" dx="8" font-size="14">📱</text>
+            </g>
+        </svg>
+
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <h1>Lineless</h1>
+                </div>
+                <div class="nav-links">
+                    <a (click)="scrollToFeatures()" class="nav-link">Features</a>
+                    <a (click)="scrollToHowItWorks()" class="nav-link">How It Works</a>
+                    <button class="btn btn-outline" (click)="navigateToLogin()">Login</button>
+                    <button class="btn btn-primary" (click)="navigateToSignup()">Get Started</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <div class="container">
+                <h1 class="hero-title">Skip the Line, Not the Service</h1>
+                <p class="hero-subtitle">
+                    Transform Your Queue Management with Virtual Queuing
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn btn-large btn-gradient" (click)="navigateToSignup()">
+                        Get Started
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Everything you need to manage queues efficiently</p>
+
+            <div class="features-grid">
+                <div class="feature-card" *ngFor="let feature of features">
+                    <div class="feature-icon">{{ feature.icon }}</div>
+                    <h3>{{ feature.title }}</h3>
+                    <p>{{ feature.description }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">Get started in 4 simple steps</p>
+
+            <div class="steps-container">
+                <div class="step" *ngFor="let step of steps">
+                    <div class="step-number">{{ step.number }}</div>
+                    <h3>{{ step.title }}</h3>
+                    <p>{{ step.description }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="use-cases">
+        <div class="container">
+            <h2 class="section-title">Perfect For Every Industry</h2>
+
+            <div class="use-cases-grid">
+                <div class="use-case-card">
+                    <div class="use-case-icon">🏥</div>
+                    <h3>Healthcare</h3>
+                    <p>Hospitals, Clinics, Pharmacies</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">🏦</div>
+                    <h3>Banking</h3>
+                    <p>Banks, ATMs, Financial Services</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">🏛️</div>
+                    <h3>Government</h3>
+                    <p>DMV, Post Office, Public Services</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">🍽️</div>
+                    <h3>Restaurants</h3>
+                    <p>Dining, Food Courts, Cafeterias</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">🛒</div>
+                    <h3>Retail</h3>
+                    <p>Stores, Supermarkets, Malls</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">✈️</div>
+                    <h3>Travel</h3>
+                    <p>Airports, Train Stations, Bus Terminals</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Queue Management?</h2>
+                <button class="btn btn-large btn-gradient" (click)="navigateToSignup()">
+                    Get Started Free
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content" style="justify-content: center; text-align: center;">
+                <div class="footer-section">
+                    <h3>Lineless</h3>
+                    <p>Skip the Line, Not the Service</p>
+                    <p style="margin-top: 1.5rem; color: #94a3b8; font-weight: 500;">By Vishal Pranav and Ananya R</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Lineless. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</div>
